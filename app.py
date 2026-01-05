@@ -1,13 +1,8 @@
 import streamlit as st
 import pandas as pd
 import joblib
-
 import requests
 from io import BytesIO
-
-url = "https://huggingface.co/Jkkeer/telco-churn-rf/blob/main/churn_model.pkl"
-model = joblib.load(BytesIO(requests.get(url).content))
-
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
@@ -53,15 +48,14 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ---------------- LOAD MODEL ----------------
-model = joblib.load("models/churn_model.pkl")
+# ---------------- LOAD MODEL FROM HUGGING FACE ----------------
+hf_url = "https://huggingface.co/Jkkeer/telco-churn-rf/resolve/main/churn_model.pkl"
+response = requests.get(hf_url)
+model = joblib.load(BytesIO(response.content))
 
 # ---------------- HEADER ----------------
 st.markdown('<div class="main-title">📊 Customer Churn Prediction</div>', unsafe_allow_html=True)
-st.markdown(
-    '<div class="subtitle">Predict customer churn using a machine learning model</div>',
-    unsafe_allow_html=True
-)
+st.markdown('<div class="subtitle">Predict customer churn using a machine learning model</div>', unsafe_allow_html=True)
 
 # ---------------- INPUT CARD ----------------
 st.markdown('<div class="card">', unsafe_allow_html=True)
@@ -70,37 +64,15 @@ st.markdown('<div class="section-title">🧾 Customer Details</div>', unsafe_all
 col1, col2 = st.columns(2)
 
 with col1:
-    contract = st.selectbox(
-        "📄 Contract Type",
-        ["Month-to-month", "One year", "Two year"]
-    )
-    tenure = st.number_input(
-        "⏳ Tenure (months)",
-        min_value=0,
-        max_value=72,
-        value=12
-    )
-    internetservice = st.selectbox(
-        "🌐 Internet Service",
-        ["DSL", "Fiber optic", "No"]
-    )
+    contract = st.selectbox("📄 Contract Type", ["Month-to-month", "One year", "Two year"])
+    tenure = st.number_input("⏳ Tenure (months)", min_value=0, max_value=72, value=12, step=1)
+    internetservice = st.selectbox("🌐 Internet Service", ["DSL", "Fiber optic", "No"])
 
 with col2:
-    monthlycharges = st.number_input(
-        "💰 Monthly Charges ($)",
-        min_value=20.0,
-        max_value=150.0,
-        value=70.0,
-        step=1.0
-    )
+    monthlycharges = st.number_input("💰 Monthly Charges ($)", min_value=20.0, max_value=150.0, value=70.0, step=1.0)
     paymentmethod = st.selectbox(
         "💳 Payment Method",
-        [
-            "Electronic check",
-            "Mailed check",
-            "Bank transfer (automatic)",
-            "Credit card (automatic)",
-        ],
+        ["Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)"]
     )
 
 st.markdown("</div>", unsafe_allow_html=True)
@@ -112,8 +84,7 @@ input_df = pd.DataFrame([{
     "monthlycharges": monthlycharges,
     "internetservice": internetservice,
     "paymentmethod": paymentmethod,
-
-    # Defaults (model-required)
+    # Defaults required by the model
     "gender": "Female",
     "seniorcitizen": 0,
     "partner": "No",
@@ -138,25 +109,15 @@ st.markdown("</div>", unsafe_allow_html=True)
 
 # ---------------- PREDICTION ----------------
 st.markdown('<div class="card">', unsafe_allow_html=True)
-
-if st.button("🚀 Predict Churn", use_container_width=True):
+if st.button("🚀 Predict Churn"):
     churn_prob = model.predict_proba(input_df)[0][1]
-
     st.markdown('<div class="section-title">📈 Prediction Result</div>', unsafe_allow_html=True)
     st.metric("Churn Probability", f"{churn_prob:.2%}")
 
     if churn_prob >= 0.5:
         st.error("⚠️ High Risk of Churn")
-        st.write(
-            "This customer has a **high probability of churning**. "
-            "Retention strategies such as better contracts or discounts are recommended."
-        )
+        st.write("This customer has a **high probability of churning**. Retention strategies such as better contracts or discounts are recommended.")
     else:
         st.success("✅ Low Risk of Churn")
         st.write("This customer appears stable with a low likelihood of churn.")
-
 st.markdown("</div>", unsafe_allow_html=True)
-
-
-
-

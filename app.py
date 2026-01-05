@@ -5,7 +5,7 @@ import joblib
 import requests
 from io import BytesIO
 
-url = "https://huggingface.co/your-username/telco-churn-rf/resolve/main/churn_model.pkl"
+url = "https://huggingface.co/Jkkeer/telco-churn-rf/blob/main/churn_model.pkl"
 model = joblib.load(BytesIO(requests.get(url).content))
 
 
@@ -156,6 +156,7 @@ if st.button("🚀 Predict Churn", use_container_width=True):
         st.write("This customer appears stable with a low likelihood of churn.")
 
 st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 

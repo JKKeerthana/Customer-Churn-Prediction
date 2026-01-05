@@ -12,7 +12,7 @@ Size: 7,043 customers
 Features: 21 features including contract type, tenure, services, and billing details
 
 ## Pipeline Flow
-### Data Preprocessing
+## Data Preprocessing
 
 Raw data is cleaned and transformed for modeling.
 
@@ -29,7 +29,7 @@ python notebooks/01_data_cleaning.py
 
 Output: cleaned_telco_churn.csv (saved in data/processed)
 
-### Training Pipeline
+## Training Pipeline
 
 A Random Forest Classifier is trained on the processed data.
 
@@ -47,7 +47,7 @@ Run the training script:
 python notebooks/04_churn_model.py
 
 
-#### Outputs:
+### Outputs:
 
 Model file: models/churn_model.pkl
 
@@ -55,7 +55,7 @@ Accuracy: ~78%
 
 ROC-AUC: ~0.82
 
-### Exploratory Data Analysis (EDA)
+## Exploratory Data Analysis (EDA)
 
 Visualize patterns in customer churn:
 
@@ -68,7 +68,7 @@ Monthly charges vs churn
 Run the EDA script:
 python notebooks/03_eda_analysis.py
 
-### Web Application
+## Web Application
 
 Predict churn probability for individual customers.
 
@@ -85,6 +85,7 @@ streamlit run app.py
 
 
 ## Here is the link to the app: https://customer-churn-prediction-23.streamlit.app/
+
 
 
 

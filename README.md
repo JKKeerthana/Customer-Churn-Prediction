@@ -84,3 +84,7 @@ Run the app locally:
 streamlit run app.py
 
 
+## Here is the link to the app: https://customer-churn-prediction-23.streamlit.app/
+
+
+
